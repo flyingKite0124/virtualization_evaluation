@@ -1,0 +1,9 @@
+[09/Dec/2015 14:54:54] "GET /ves_ihep/ HTTP/1.1" 200 22648
+[09/Dec/2015 14:54:54] "GET /static/bootstrap/css/bootstrap.min.css HTTP/1.1" 304 0
+[09/Dec/2015 14:54:54] "GET /static/bootstrap/css/bootstrap-theme.min.css HTTP/1.1" 304 0
+[09/Dec/2015 14:54:54] "GET /static/bootstrap/mycss/base.css HTTP/1.1" 304 0
+[09/Dec/2015 14:54:54] "GET /static/bootstrap/jquery/jquery-2.1.3.min.js HTTP/1.1" 304 0
+[09/Dec/2015 14:54:54] "GET /static/bootstrap/js/bootstrap.min.js HTTP/1.1" 304 0
+[09/Dec/2015 14:54:54] "GET /static/bootstrap/jquery/ajaxfileupload.js HTTP/1.1" 304 0
+[09/Dec/2015 14:54:54] "GET /static/bootstrap/js/Scene.js HTTP/1.1" 304 0
+[09/Dec/2015 14:54:54] "GET /static/images/background.jpg HTTP/1.1" 304 0

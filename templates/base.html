@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>VES</title>
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}" rel="stylesheet">
+    <link href="{% static 'bootstrap/mycss/base.css' %}" rel="stylesheet">
+    <!-- Bootstrap js -->
+    <script src="{% static 'bootstrap/jquery/jquery-2.1.3.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <!--<script type="text/javascript" src="{% static 'bootstrap/js/csrf.js' %}"></script> -->
+</head>
+
+<body background="{% static 'images/background.jpg' %}">
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/ves_ihep/">{% block brand-title %}{% endblock %}</a> <!-- such as VES-HOME -->
+            </div>
+
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                     <li class="dropdown">
+                        <a href="/ves_ihep/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        Home<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" data-toggle="modal" data-target="#Add_Scene">New Scene</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#Delete_Scene" >Delete Scene</a></li>
+                        </ul>
+                    </li> 
+                    <li class="dropdown">
+                        <a href="/ves_ihep/hostpool/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hosts Pool<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" data-toggle="modal" data-target="#Add_Host">Add Host</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="/ves_ihep/scriptpool/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Scripts Pool<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" data-toggle="modal" data-target="#Add_Script">Add a script</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/ves_ihep/evaresult/">Evaluation Results</a></li>
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </nav>  <!-- Fixed navbar ended-->
+
+    <!-- main body begin -->
+    <div class="container theme-showcase" role="main" style="margin-top:20px;">
+        <!--page header-->
+        <div class="row">
+            <div class="col-md-12 col-xs-12 page-header">
+                <h2>{% block body-title %}{% endblock %}</h2>  
+            </div>
+        </div>
+        {% block body_block %}{% endblock %}
+    </div> <!-- main body end -->
+<!-- container -->
+    <!-- 模态框（Modal） 导航栏部分-->
+    <!--新增测试场景-->
+    <form class="modal fade" id="Add_Scene" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" method='post' action='/ves_ihep/add_new_scene/'>
+    {% csrf_token %}
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="AddS">
+                        <b>添加测试环境</b>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="EvaSecName"><b>测 试 环 境 名 称：</b></label>   <!--之前不添加label标签可以?-->
+                        <input type="text" class="form-control" id="EvaSecName" name="name" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+                    <button type="submit" class="btn btn-primary">确 认 添 加</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </form>
+    <!--删除测试场景-->
+    <form class="modal fade" id="Delete_Scene" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" method='post' action='/ves_ihep/delete_scene/'>
+    {% csrf_token %}
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="DeleteS">
+                   <b>删除的测试环境对应的名称</b>
+                </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <select class="form-control input-sm" id="wait_to_be_del_scenes" name="name">
+                        </select>
+                    </div>
+                    <p></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+                    <button type="submit" class="btn btn-primary" id='delete_scen'>确 认 删 除</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </form>
+    <!--添加测试主机-->
+    <form class="modal fade" id="Add_Host" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" method='post' action='/ves_ihep/add_host/'>
+        {% csrf_token %}
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="AddH">
+                        <b>添加测试主机</b>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="EvaHost"><b>测 试 主 机 IP：</b></label>   <!--之前不添加label标签可以?-->
+                        <input type="text" class="form-control" id="EvaHost" name='IP'/>
+                        <label for="HostUser"><b>用 户 名：</b></label>   
+                        <input type="text" class="form-control" id="HostUser" name="username" />
+                        <label for="HostPwd"><b>密 码：</b></label>   
+                        <input type="password" class="form-control" id="HostPwd" name="passwd"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+                    <button type="submit" class="btn btn-primary">确 认 添 加</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </form>
+    <!--添加脚本-->
+    <div class="modal fade" id="Add_Script" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                   <b>在脚本池里添加一个脚本文件</b>
+                </h4>
+                </div>
+                <div class="modal-body">
+                    <form action="/ves_ihep/add_script/" method="post" enctype="multipart/form-data" id="add_script_form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="ScriptName">
+                                Enter Script Name
+                            </label>
+                            <input type="text" class="form-control" id="ScriptName" name="ScriptName" placeholder="Script Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="ScriptFile">ScriptFile</label>
+                            <input type="file" name="ScriptFile" id="ScriptFile" style="width:450px; height:35px;margin:25px 250px 0 auto;font-size:20px;">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+                    <button type="submit" form="add_script_form" class="btn btn-primary">确 认 添 加</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </div>
+    <!--导航模态框 结束位置-->
+
+
+ </body>
+
+</html>

@@ -1,0 +1,18 @@
+{
+"configs" : [
+  {
+"server" : "45.116.12.192",
+"server_port" : 8828,
+"password" : "vpn@lab309",
+"method" : "aes-256-cfb",
+"remarks" : ""}
+
+],
+"index" : 0,
+"global" : false,
+"enabled" : true,
+"shareOverLan" : false,
+"isDefault" : false,
+"localPort" : 1080,
+"pacUrl" : null,
+"useOnlinePac" : false}

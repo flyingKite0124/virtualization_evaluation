@@ -1,0 +1,181 @@
+{% extends 'base.html'  %}
+<!-- {% include "modals.html" %} -->
+{% load staticfiles %}
+
+{% block brand-title %}VES-HOME{% endblock %}
+
+{% block body-title %}Virtualization Evaluation System{% endblock %}
+
+{% block body_block %}
+<script src="{% static 'bootstrap/jquery/ajaxfileupload.js' %}"></script>
+<script src="{% static 'bootstrap/js/Scene.js' %}"></script>
+<div class="row">
+            <div class="col-md-3 col-xs-3">
+                <ul id="main-nav" class="main-nav nav nav-tabs nav-stacked" style="">
+                {% for scene in scenes %}
+                    <li >
+                        <a href="#{{ scene.slug }}" class="nav-header collapsed" data-toggle="collapse">
+                             {{ scene.name }}
+                            <span class="pull-right glyphicon  glyphicon-chevron-toggle"></span>
+                        </a>
+                        <ul id="{{ scene.slug }}" class="nav nav-list secondmenu collapse "> <!--<ul id="Cpu-Home" class="nav nav-list secondmenu collapse in">-->
+                            <li>
+                            	<a href="#" onclick="set_scene({{ scene.id }})" data-toggle="modal" data-target="#Add_New_Action" id="add_activity_{{ scene.id }}">
+                            	&nbsp; ＋Add New Activity</a></li>
+                            <li>
+                            	<a href="#" onclick="deploy_init({{ scene.id }})" data-toggle="modal" data-target="#Deploy_Scene" id="deploy_scene_{{ scene.id }}">
+                            		&nbsp; ＋Deploy Secene
+                            	</a>
+                            </li>
+                            {% for activity in scene.activities %}
+                            <li style="border-bottom:white solid thin;" id="{{ scene.id }}_{{ activity.id }}">
+                                <a href="#menu_{{ scene.id }}_{{ activity.id }}" class="collapsed" data-toggle="collapse">&nbsp;●{{ activity.activity_name }} </a>
+                                <ul id="menu_{{ scene.id}}_{{ activity.id }}" class="nav nav-list thirdmenu collapse ">
+                                    <li><a href="###" onclick="view_activity({{ activity.id }})" class="rm_acti_c1">&emsp;View Activity</a></li>
+                                    <li><a href="###" onclick="delete_activity({{ activity.id }})" class="rm_acti_c1">&emsp;Remove Activity</a></li>
+                                    <li><a href="###" onclick="set_activity({{ activity.id }})"data-toggle="modal" data-target="#Modify_Action">&emsp;Rename Acivity</a></li>
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+            <div class="col-xs-8 col-sm-8 col-md-8 content">
+                <pre id="script_content">显示测试活动(脚本)具体内容区域</pre>
+            </div>
+</div>
+
+    <!--模态框 测试场景部分-->
+    <!--添加测试活动 Add New Acitivity-->
+    <div class="modal fade" id="Add_New_Action" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                   <b>请选择新建测试活动脚本文件</b>
+                </h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="ActivityName">Activity Name</label>
+                            <input type="text" class="form-control" name="activity_name" id="ActivityName" />
+                        </div>
+                        <div class="form-group">
+                            <label for="ScriptPoolFile">
+                                Select From Scripts Pool
+                            </label>
+                             <select class="form-control input-sm" id="ScriptPoolFile" >
+                                <option></option>
+                            {% for script in scripts %}
+                            {% if script.script_type == "pool" %}
+                                <option id="script_{{ script.id }}">{{ script.script_name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="NativeFile">Select From your PC</label>
+                            <input type="file" name="Native_Act_File" id="NativeFile" style="width:450px; height:35px;margin:25px 250px 0 auto;font-size:20px;" >
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+                    <button type="button" id="add_activity_btn" class="btn btn-primary" onclick="">确 认 添 加</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </div>
+    <!--修改测试活动 Modify activity-->
+    <div class="modal fade" id="Modify_Action" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" >
+                        <b>修改测试活动</b>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="Modified_Eva_Name"><b>修 改 后 测 试 活 动 名 称：</b></label>   <!--之前不添加label标签可以?-->
+                        <input type="text" class="form-control" id="Modified_Eva_Name" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+                    <button type="button" class="btn btn-primary" id="rename_activity_btn" onclick="">确 认 修 改</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </div>
+    <!--部署场景 Deploy Scene-->
+    <div class="modal fade" id="Deploy_Scene" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" >
+                        <b>部署测试活动</b>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="Eva_Action" class="control-label"><b>测试活动：</b></label>   
+                            <select id="deploy_activity_select" class="form-control" id="Eva_Action">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="Eva_Host" class="control-label"><b>测试主机：</b></label>   
+                            <select class="form-control" id="Eva_Host">
+                                {% for host in hosts %}
+                                {% if host.status %}
+                                <option value="{{ host.id }}">{{ host.IP }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div><button type="button" onclick="add_deploy_list()" class="btn btn-default" id="Add_One_Scene">添加至测试场景</button></div>
+                        </div>
+                    </form>
+                    <table class="table table-hover">
+                        <caption><b>场景待部署活动</b></caption>
+                        <thead>
+                            <tr>
+                                <th>测试活动</th>
+                                <th>测试主机</th>
+                                <th>删除测试活动</th>
+                            </tr>
+                            <tbody id="deploy_list">
+                                
+                            </tbody>
+                        </thead>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+                    <button type="button" id="deploy_btn" class="btn btn-primary">部 署</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </div>
+
+{% endblock %}

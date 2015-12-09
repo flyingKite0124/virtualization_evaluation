@@ -1,0 +1,43 @@
+{% extends 'base.html'  %}
+{% load staticfiles %}
+
+{% block brand-title %}VES-HOME{% endblock %}
+
+{% block body-title %}Virtualization Evaluation System{% endblock %}
+
+{% block body_block %}
+<div class="row">
+            <div class="col-md-3 col-xs-3">
+                <ul id="main-nav" class="main-nav nav nav-tabs nav-stacked" style="">
+                {% for scene in scenes %}
+                    <li >
+                        <a href="#{{ scene.name }}" class="nav-header collapsed" data-toggle="collapse">
+                            {{ scene.name }}	
+                            <span class="pull-right glyphicon  glyphicon-chevron-toggle"></span>
+                        </a>
+                        <ul id="{{ scene.name }}" class="nav nav-list secondmenu collapse "> <!--<ul id="Cpu-Home" class="nav nav-list secondmenu collapse in">-->
+                            <li>
+                            	<a href="#" data-toggle="modal" data-target="#Add_New_Action" id="Add_C_Acti">
+                            	<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                            	&nbsp; Add New Activity</a></li>
+                            <li>
+                            	<a href="#" data-toggle="modal" data-target="#Deploy_Scene" id="Deploy_CPU_Scene">
+                            		<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-circle-arrow-up"></span></button>
+                            		&nbsp; Deploy Secene
+                            	</a>
+                            </li>
+                            <!-- <li style="border-bottom:white solid thin;" class="dropdown" id="CPU_1">
+                            	<a href="#" class="dropdown-toggle" data-toggle="dropdown">&nbsp;•One </a>
+                            	<ul class="dropdown-menu">
+                            		<li><a href="#" class="rm_acti">Remove Activity</a></li>
+                            		<li><a  data-toggle="modal" data-target="#Modify_Action">Modify Acivity</a></li>
+                            	</ul>
+		                    </li>
+                            <li style="border-bottom:white solid thin;"><a href="#">&nbsp;•Two</a></li>
+                            <li style="border-bottom:white solid thin;"><a href="#">&nbsp;•Three</a></li>-->
+                        </ul>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+{% endblock %}

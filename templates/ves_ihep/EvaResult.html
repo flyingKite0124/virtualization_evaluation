@@ -1,0 +1,41 @@
+{% extends 'base.html'  %}
+{% load staticfiles %}
+
+{% block brand-title %}VES-RESULT{% endblock %}
+
+{% block body-title %}Evaluation Results{% endblock %}
+
+{% block body_block %}
+    <div class="container theme-showcase" role="main" style="margin-top:20px;">
+         <div class="row">
+            <div class="col-md-3 col-xs-3 col-sm-3">
+                <ul id="main-nav" class="main-nav nav nav-tabs nav-stacked" style="">
+                    {% for scene_history in scene_histories %}
+                    <li >
+                        <a href="#scene_history_{{ scene_history.id }}" class="nav-header collapsed" data-toggle="collapse">
+                                #{{ scene_history.id }} {{ scene_history.scene.name}}
+                            <span class="pull-right glyphicon  glyphicon-chevron-toggle"></span>
+                        </a>
+                        <ul id="scene_history_{{ scene_history.id }}" class="nav nav-list secondmenu collapse ">
+                            {% for activity_history in scene_history.activity_histories %}
+                            <li style="border-bottom:white solid thin;" class="collapse">
+                                <a href="#scene_activity_history_{{ scene_history.id}}_{{ activity_history.id }}" class="collapsed" data-toggle="collapse">&nbsp;-{{ activity_history.activity.activity_name }} {{ activity_history.host.ip }}</a>
+                                <ul id="scene_activity_history_{{ scene_history.id }}_{{ activity_history.id }}" class="nav nav-list thirdmenu collapse">
+                                    <li><a href="###" onclick="view_script({{ activity_history.activity.id }})" >&emsp;View Script</a></li>
+                                    <li><a href="###" onclick="view_result({{ activity_history.id }})" >&emsp;View Result</a></li>
+                                </ul>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-md-9 col-xs-9 content">
+                <pre id="content">结果显示处</pre>
+            </div>
+        </div>
+    </div>
+	<script type="text/javascript" src="{% static 'bootstrap/js/Result.js' %}"></script>
+	<script type="text/javascript" src="{% static 'bootstrap/js/csrf.js' %}"></script>
+{% endblock %}
