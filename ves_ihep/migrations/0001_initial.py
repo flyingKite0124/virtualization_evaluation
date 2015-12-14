@@ -72,10 +72,10 @@ class Migration(migrations.Migration):
             name='Script',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('script_name', models.CharField(max_length=30)),
+                ('script_name', models.CharField(max_length=120)),
                 ('upload_time', models.DateTimeField()),
                 ('script_type', models.CharField(max_length=30)),
-                ('script_path', models.CharField(max_length=60)),
+                ('script_path', models.CharField(max_length=120)),
             ],
             options={
             },

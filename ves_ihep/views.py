@@ -129,7 +129,7 @@ def add_script(request):
 	if request.method == "POST":
 		script = Script()
 		script.script_name = request.POST["ScriptName"]
-		script.script_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),"scripts",request.FILES['ScriptFile'].name)
+		script.script_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),"scripts",script.script_name)
 		script.script_type = "pool"
 		script.upload_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S")
 		script.save()
@@ -224,8 +224,10 @@ def run_activity(scene_history,host,activities):
 		activity_history.scene_history=scene_history
 		activity_history.host=host
 		activity_history.activity=activity
-		activity_history.result=ves_connection.test.remote_run(host.IP,22,host.username,host.passwd,activity.script.script_path)
-		activity_history.save()
+        activity_history.result="Script is Running!"
+        activity_history.save()
+        activity_history.result=ves_connection.test.remote_run(host.IP,22,host.username,host.passwd,activity.script.script_path)
+        activity_history.save()
 
 
 def view_result(request):

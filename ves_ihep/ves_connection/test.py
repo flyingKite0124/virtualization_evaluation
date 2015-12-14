@@ -10,10 +10,8 @@ def scp_cmd(ip,port,user,passwd,filename):
 	try:
 		index = scp.expect(['password:','continue connecting (yes/no)?'],timeout=5)
 		if index == 0:
-			print ("t1")
 			scp.sendline(passwd)
 		elif index == 1:
-			print "t2"
 			scp.sendline("yes")
 			scp.expect('password:')
 			scp.sendline(passwd)
