@@ -7,8 +7,9 @@ pip install django==1.7
 ```
 
 ## Configure
-update your mysql configuration in /virtualization_evaluation/database.py first 
+update your mysql configuration in ./virtualization_evaluation/database.py first 
 ```sh
+vim virtualization_evaluation/database.py
 ./bootstrap
 ```
 
