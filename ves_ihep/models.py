@@ -33,7 +33,7 @@ class Script(models.Model):
 
 
 class Host(models.Model):
-	IP = models.IPAddressField()
+	IP = models.GenericIPAddressField()
 	username = models.CharField(max_length = 128)
 	passwd = models.CharField(max_length = 128)
 	status=models.IntegerField(default=0)

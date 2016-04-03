@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
+from virtualization_evaluation import views
 
 
 
@@ -11,6 +12,7 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
 	url(r'^ves_ihep/', include('ves_ihep.urls')),
+    url(r'^$',views.redirect,name='redirect'),
 )
 
 if settings.DEBUG:

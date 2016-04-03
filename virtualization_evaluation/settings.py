@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from database import DATABASES
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -56,15 +57,6 @@ WSGI_APPLICATION = 'virtualization_evaluation.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-		'NAME': 'vesdb',
-		'USER': 'root',
-		'PASSWORD': 'lv',
-    }
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
