@@ -1,4 +1,7 @@
 *.pyc
 /scripts/*
+/ves_ihep/migrations/*
+log
 
 !.gitkeep
+!/ves_ihep/migrations/__init__.py

@@ -1,0 +1,3 @@
+git update-index --assume-unchanged virtualization_evaluation/database.py
+python manage.py makemigrations
+python manage.py migrate
