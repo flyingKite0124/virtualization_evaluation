@@ -12,8 +12,8 @@ from os.path import join, dirname, abspath
 
 PROJECT_DIR = dirname(dirname(abspath(__file__)))
 import sys
-sys.path.insert(0,PROJECT_DIR)
-	
+sys.path.insert(0, PROJECT_DIR)
+
 #os.environ.setdefault("DJANGO_SETTINGS_MODULE", "virtualization_evaluation.settings")
 os.environ["DJANGO_SETTINGS_MODULE"] = "virtualization_evaluation.settings"
 

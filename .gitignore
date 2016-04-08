@@ -2,6 +2,7 @@
 /scripts/*
 /ves_ihep/migrations/*
 log
+.idea
 
 !.gitkeep
 !/ves_ihep/migrations/__init__.py
