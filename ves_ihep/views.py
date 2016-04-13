@@ -3,7 +3,7 @@ import datetime
 import ves_connection
 import thread
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotFound, HttpResponseNotAllowed
 from ves_ihep.models import Scene, Script, Host, Activity, SceneHistory, ActivityHistory
 from ves_ihep.forms import NewScene, DelScene
 from django.core.serializers.json import DjangoJSONEncoder
@@ -44,7 +44,7 @@ def delete_scene(request):
             print "Not Select the deleted scene"
     else:
         return HttpResponseNotFound("Pelease Enter Right URL!")
-    return render(request, 'ves_ihep/index.html', context_dict)
+    return HttpResponseRedirect("/ves_ihep/")
 
 
 def show_scenes(request):
@@ -173,9 +173,8 @@ def add_script(request):
         script.script_type = "pool"
         script.upload_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S")
         script.save()
-        fp = open(script.script_path, "w")
-        fp.write(request.FILES['ScriptFile'].read())
-        fp.close()
+        with open(script.script_path, "w") as fp:
+            fp.write(request.FILES['ScriptFile'].read())
     os.popen('dos2unix ' + script.script_path)
     return HttpResponseRedirect('/ves_ihep/scriptpool/')
 
@@ -281,19 +280,31 @@ def run_activity(scene_history, host, activities):
         activity_history.scene_history = scene_history
         activity_history.host = host
         activity_history.activity = activity
-    activity_history.result = "Script is Running!"
-    activity_history.save()
-    activity_history.result = ves_connection.test.remote_run(
-        host.IP, 22, host.username, host.passwd, activity.script.script_path)
-    activity_history.save()
+        activity_history.save()
+        activity_history.result_path = os.path.join(
+            os.path.dirname(
+                os.path.dirname(__file__)
+            ),
+            "result",
+            str(activity_history.id)
+        )
+        activity_history.save()
+        with open(activity_history.result_path, "w")as fp:
+            fp.write("Script is Running!")
+        result = ves_connection.test.remote_run(
+            host.IP, 22, host.username, host.passwd, activity.script.script_path)
+        with open(activity_history.result_path, "w")as fp:
+            fp.write(result)
 
 
 def view_result(request):
     if request.is_ajax() == True and request.method == "POST":
         activity_history = ActivityHistory.objects.get(
             pk=request.POST['activity_history_id'])
+        with open(activity_history.result_path, "r") as fp:
+            result = fp.read()
         return JsonResponse(
-            {'result': 'success', 'content': activity_history.result})
+            {'result': 'success', 'content': result})
 
 
 def evaresult(request):

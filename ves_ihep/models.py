@@ -58,7 +58,7 @@ class SceneHistory(models.Model):
 
 
 class ActivityHistory(models.Model):
-    result = models.TextField(blank=True, null=True)
+    result_path = models.CharField(max_length=120,null=True)
     start_time = models.DateTimeField(blank=True, null=True)
     finish_time = models.DateTimeField(blank=True, null=True)
     host = models.ForeignKey(Host)
