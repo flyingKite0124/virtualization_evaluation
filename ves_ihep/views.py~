@@ -18,7 +18,7 @@ def index(request):
     for scene in scene_list:
         scene.activities = Activity.objects.filter(scene=scene)
     context_dict = {'scenes': scene_list, 'scripts': scripts, 'hosts': hosts}
-    return render(request, 'ves_ihep/index.html',context_dict)
+    return render(request, 'ves_ihep/index.html')
 
 
 def add_new_scene(request):
@@ -165,15 +165,13 @@ def add_script(request):
     if request.method == "POST":
         script = Script()
         script.script_name = request.POST["ScriptName"]
-        script.upload_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S")
-        script.script_type = "pool"
-        script.save()
         script.script_path = os.path.join(
             os.path.dirname(
                 os.path.dirname(__file__)),
             "scripts",
-            "pool",
-            str(script.id))
+            script.script_name)
+        script.script_type = "pool"
+        script.upload_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S")
         script.save()
         with open(script.script_path, "w") as fp:
             fp.write(request.FILES['ScriptFile'].read())
@@ -183,9 +181,7 @@ def add_script(request):
 
 def delete_script(request):
     if request.is_ajax() == True and request.method == "POST":
-        script=Script.objects.get(pk=request.POST['script_id'])
-        os.popen("rm "+script.script_path)
-        script.delete()
+        Script.objects.get(pk=request.POST['script_id']).delete()
         return JsonResponse({'result': 'success'})
 
 
@@ -202,13 +198,11 @@ def add_activity(request):
             script.script_name = str(
                 script.upload_time) + request.FILES['Native_Act_File'].name
             script.script_type = "native"
-            script.save()
             script.script_path = os.path.join(
                 os.path.dirname(
                     os.path.dirname(__file__)),
                 "scripts",
-                "native",
-                str(script.id))
+                request.FILES['Native_Act_File'].name)
             script.save()
             fp = open(script.script_path, "w")
             fp.write(request.FILES['Native_Act_File'].read())
@@ -286,7 +280,6 @@ def run_activity(scene_history, host, activities):
         activity_history.scene_history = scene_history
         activity_history.host = host
         activity_history.activity = activity
-        activity_history.start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S")
         activity_history.save()
         activity_history.result_path = os.path.join(
             os.path.dirname(
@@ -300,8 +293,6 @@ def run_activity(scene_history, host, activities):
             fp.write("Script is Running!")
         result = ves_connection.test.remote_run(
             host.IP, 22, host.username, host.passwd, activity.script.script_path)
-        activity_history.finish_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S")
-        activity_history.save()
         with open(activity_history.result_path, "w")as fp:
             fp.write(result)
 
@@ -319,7 +310,7 @@ def view_result(request):
 def evaresult(request):
     if request.is_ajax() == False and request.method == 'GET':
         template = loader.get_template('ves_ihep/EvaResult.html')
-        temp_var = dict()
+        temp_var = {}
         temp_var['page'] = 'result'
         temp_var['scenes'] = Scene.objects.all()
         temp_var['scene_histories'] = SceneHistory.objects.all().order_by('-pk')
