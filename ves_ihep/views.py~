@@ -18,7 +18,7 @@ def index(request):
     for scene in scene_list:
         scene.activities = Activity.objects.filter(scene=scene)
     context_dict = {'scenes': scene_list, 'scripts': scripts, 'hosts': hosts}
-    return render(request, 'ves_ihep/index.html',context_dict)
+    return render(request, 'ves_ihep/index.html')
 
 
 def add_new_scene(request):
