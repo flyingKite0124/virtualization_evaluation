@@ -23,7 +23,7 @@
                 <div class="col-md-3 col-xs-3" align="center"><button class="btn btn-sm" onclick="delete_script({{ script.id }})">Del</button></div>
             </div>
             <div class="content collapse" id="script_content_{{ script.id }}">
-                    <pre>{{ script.script_content }}</pre>
+                    <pre><code class="language-bash">{{ script.script_content }}</code></pre>
             </div>
             {% endif %}
             {% endfor %}
