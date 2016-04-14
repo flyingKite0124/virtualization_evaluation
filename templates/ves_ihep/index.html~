@@ -1,7 +1,7 @@
 {% extends 'base.html'  %}
 <!-- {% include "modals.html" %} -->
 {% load staticfiles %}
-{% load pagination_tags %}
+
 {% block brand-title %}VES-HOME{% endblock %}
 
 {% block body-title %}Virtualization Evaluation System{% endblock %}
@@ -12,7 +12,6 @@
 <div class="row">
             <div class="col-md-3 col-xs-3">
                 <ul id="main-nav" class="main-nav nav nav-tabs nav-stacked" style="">
-{% autopaginate scenes 5 %}
                 {% for scene in scenes %}
                     <li >
                         <a href="#{{ scene.slug }}" class="nav-header collapsed" data-toggle="collapse">
@@ -41,10 +40,9 @@
                         </ul>
                     </li>
                 {% endfor %}
-{% paginate %}
                 </ul>
             </div>
-            <div class="col-xs-8 col-sm-8 col-md-8 content" style="height:400px; overflow: auto;">
+            <div class="col-xs-8 col-sm-8 col-md-8 content">
                 <pre id="script_content">显示测试活动(脚本)具体内容区域</pre>
             </div>
 </div>
