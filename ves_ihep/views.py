@@ -165,13 +165,15 @@ def add_script(request):
     if request.method == "POST":
         script = Script()
         script.script_name = request.POST["ScriptName"]
+        script.upload_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S")
+        script.script_type = "pool"
+        script.save()
         script.script_path = os.path.join(
             os.path.dirname(
                 os.path.dirname(__file__)),
             "scripts",
-            script.script_name)
-        script.script_type = "pool"
-        script.upload_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S")
+            "pool",
+            str(script.id))
         script.save()
         with open(script.script_path, "w") as fp:
             fp.write(request.FILES['ScriptFile'].read())
@@ -198,11 +200,13 @@ def add_activity(request):
             script.script_name = str(
                 script.upload_time) + request.FILES['Native_Act_File'].name
             script.script_type = "native"
+            script.save()
             script.script_path = os.path.join(
                 os.path.dirname(
                     os.path.dirname(__file__)),
                 "scripts",
-                request.FILES['Native_Act_File'].name)
+                "native",
+                str(script.id))
             script.save()
             fp = open(script.script_path, "w")
             fp.write(request.FILES['Native_Act_File'].read())
@@ -280,6 +284,7 @@ def run_activity(scene_history, host, activities):
         activity_history.scene_history = scene_history
         activity_history.host = host
         activity_history.activity = activity
+        activity_history.start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S")
         activity_history.save()
         activity_history.result_path = os.path.join(
             os.path.dirname(
@@ -293,6 +298,8 @@ def run_activity(scene_history, host, activities):
             fp.write("Script is Running!")
         result = ves_connection.test.remote_run(
             host.IP, 22, host.username, host.passwd, activity.script.script_path)
+        activity_history.finish_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S")
+        activity_history.save()
         with open(activity_history.result_path, "w")as fp:
             fp.write(result)
 
@@ -310,7 +317,7 @@ def view_result(request):
 def evaresult(request):
     if request.is_ajax() == False and request.method == 'GET':
         template = loader.get_template('ves_ihep/EvaResult.html')
-        temp_var = {}
+        temp_var = dict()
         temp_var['page'] = 'result'
         temp_var['scenes'] = Scene.objects.all()
         temp_var['scene_histories'] = SceneHistory.objects.all().order_by('-pk')

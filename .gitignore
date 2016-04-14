@@ -1,5 +1,6 @@
 *.pyc
-/scripts/*
+/scripts/native/*
+/scripts/pool/*
 /result/*
 /ves_ihep/migrations/*
 log

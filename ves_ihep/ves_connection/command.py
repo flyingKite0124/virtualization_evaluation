@@ -16,3 +16,5 @@ def main():
             sys.argv[
                 1:], 'h?ac:', [
                 'help', 'h', '?'])
+    finally:
+        pass
