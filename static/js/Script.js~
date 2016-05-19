@@ -21,3 +21,8 @@ function delete_script(id)
     });
 }
 
+function Tip(tipcontent)
+{
+	$(".tip").append(tipcontent);
+}
+

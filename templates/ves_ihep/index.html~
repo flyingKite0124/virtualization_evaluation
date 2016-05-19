@@ -44,7 +44,7 @@
 {% paginate %}
                 </ul>
             </div>
-            <div class="col-xs-8 col-sm-8 col-md-8 content">
+            <div class="col-xs-8 col-sm-8 col-md-8 content" style="height:400px; overflow: auto;">
                 <pre id="script_content">显示测试活动(脚本)具体内容区域</pre>
             </div>
 </div>
@@ -63,7 +63,7 @@
                 </h4>
                 </div>
                 <div class="modal-body">
-                    <form onsubmit="return AAFormCheck()">
+                    <form>
                         <div class="form-group">
                             <label for="ActivityName">Activity Name</label>
                             <input type="text" class="form-control" name="activity_name" id="ActivityName" />
@@ -84,6 +84,7 @@
                         <div class="form-group">
                             <label for="NativeFile">Select From your PC</label>
                             <input type="file" name="Native_Act_File" id="NativeFile" style="width:450px; height:35px;margin:25px 250px 0 auto;font-size:20px;" >
+			    <p class="tip" style="color:red"> </p>
                         </div>
                     </form>
                 </div>
@@ -153,7 +154,9 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <div><button type="button" onclick="add_deploy_list()" class="btn btn-default" id="Add_One_Scene">添加至测试场景</button></div>
+                            <div>
+				<button type="button" onclick="add_deploy_list()" class="btn btn-default" id="Add_One_Scene">添加至测试场景</button></div>
+				<p class="tip" style="color:red"> </p>
                         </div>
                     </form>
                     <table class="table table-hover">

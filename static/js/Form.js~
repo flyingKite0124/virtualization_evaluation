@@ -1,9 +1,24 @@
+$(function(){$('#Add_Scene').on('show.bs.modal', function () {
+  	$(".tip").empty();
+	})
+})
+$(function(){$('#Add_Host').on('show.bs.modal', function () {
+  	$(".tip").empty();
+	})
+})
+$(function(){$('#Add_Script').on('show.bs.modal', function () {
+  	$(".tip").empty();
+	})
+})
+
 function ASFormCheck()
 {
+	$(".tip").empty();	
 	EvaSecName=$("#EvaSecName").val();
 	if(EvaSecName=="")
 	{
-		alert("Please enter the name of the scene");
+		str="Please enter the name of the scene";
+		Tip(str);
 		return false;	
 	}
 	else return true;
@@ -12,22 +27,26 @@ function ASFormCheck()
 
 function AHFormCheck()
 {
+	$(".tip").empty();
 	EvaHost=$("#EvaHost").val();
 	HostUser=$("#HostUser").val();
 	HostPwd=$("#HostPwd").val();
 	if(EvaHost=="")
 	{
-		alert("Please enter the ip of the host");
+		str="Please enter the ip of the host";
+		Tip(str);
 		return false;	
 	}
 	else if(HostUser=="")
 	{
-		alert("Please enter the name of the host user");
+		str="Please enter the name of the host user";
+		Tip(str);
 		return false;	
 	}
 	else if(HostPwd=="")
 	{
-		alert("Please enter the password of the host");
+		str="Please enter the password of the host";
+		Tip(str);
 		return false;	
 	}
 	else return true;
@@ -39,23 +58,17 @@ function AScriptFormCheck()
 	ScriptName=$("#ScriptName").val();
 	if(ScriptName=="")
 	{
-		alert("Please enter the name of the script");
+		str="Please enter the name of the script";
+		Tip(str);
 		return false;	
 	}
 	else return true;
 
 }
 
-
-function AAFormCheck()
+function Tip(tipcontent)
 {
-	ActivityName=$("#ActivityName").val();
-	if(ActivityName=="")
-	{
-		alert("Please enter the name of the activity");
-		return false;	
-	}
-	else return true;
-
+	$(".tip").append(tipcontent);
 }
+
 

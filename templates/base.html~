@@ -21,6 +21,10 @@
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/Form.js' %}"></script>
     <!--<script type="text/javascript" src="{% static 'js/csrf.js' %}"></script> -->
+        <!--Prism css-->
+    <link href="{% static 'css/prism.css' %}" rel="stylesheet">
+    <!--Prism js-->
+    <script src="{% static 'js/prism.js' %}"></script>
 </head>
 
 <body background="{% static 'images/background.jpg' %}">
@@ -96,8 +100,10 @@
 		            <div class="form-group">
 		                <label for="EvaSecName"><b>测 试 环 境 名 称：</b></label>   <!--之前不添加label标签可以?-->
 		                <input type="text" class="form-control" id="EvaSecName" name="name" />
+				<p class="tip" style="color:red"> </p>
 		            </div>
 		        </div>
+			
 		        <div class="modal-footer">
 		            <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
 		            <button type="submit" class="btn btn-primary">确 认 添 加</button>
@@ -157,6 +163,7 @@
                         <input type="text" class="form-control" id="HostUser" name="username" />
                         <label for="HostPwd"><b>密 码：</b></label>   
                         <input type="password" class="form-control" id="HostPwd" name="passwd"/>
+			<p class="tip" style="color:red"> </p>
                     </div>
                 </div>
                 <div class="modal-footer">
