@@ -13,7 +13,7 @@
                 <div class="col-md-6 col-xs-6" align="center">View</div>
                 <div class="col-md-3 col-xs-3" align="center">Delete</div>
             </div>
-{% autopaginate scripts 5 %}
+{% autopaginate scripts 10 %}
             {% for script in scripts %}
             {% if script.script_type == "pool" %}
             <div class="row">
@@ -23,8 +23,8 @@
                 </div>
                 <div class="col-md-3 col-xs-3" align="center"><button class="btn btn-sm" onclick="delete_script({{ script.id }})">Del</button></div>
             </div>
-            <div class="content collapse" id="script_content_{{ script.id }}">
-                    <pre><code class="language-bash">{{ script.script_content }}</code></pre>
+            <div class="content collapse" id="script_content_{{ script.id }}" style="height:400px; overflow:auto">
+                    <pre class="language-bash"><code class="language-bash">{{ script.script_content }}</code></pre>
             </div>
             {% endif %}
             {% endfor %}

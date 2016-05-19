@@ -19,11 +19,14 @@
     <!-- Bootstrap js -->
     <script src="{% static 'js/jquery-2.1.3.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/Form.js' %}"></script>
     <!--<script type="text/javascript" src="{% static 'js/csrf.js' %}"></script> -->
         <!--Prism css-->
     <link href="{% static 'css/prism.css' %}" rel="stylesheet">
     <!--Prism js-->
     <script src="{% static 'js/prism.js' %}"></script>
+    <!--echarts js-->
+    <script src="{% static 'js/echarts.common.min.js' %}"></script>
 </head>
 
 <body background="{% static 'images/background.jpg' %}">
@@ -83,7 +86,7 @@
 <!-- container -->
     <!-- 模态框（Modal） 导航栏部分-->
     <!--新增测试场景-->
-    <form class="modal fade" id="Add_Scene" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" method='post' action='/ves_ihep/add_new_scene/'>
+    <form class="modal fade" id="Add_Scene" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" method='post' action='/ves_ihep/add_new_scene/' onsubmit="return ASFormCheck()">
     {% csrf_token %}
         <div class="modal-dialog">
             <div class="modal-content">
@@ -95,16 +98,18 @@
                         <b>添加测试环境</b>
                     </h4>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="EvaSecName"><b>测 试 环 境 名 称：</b></label>   <!--之前不添加label标签可以?-->
-                        <input type="text" class="form-control" id="EvaSecName" name="name" />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
-                    <button type="submit" class="btn btn-primary">确 认 添 加</button>
-                </div>
+		        <div class="modal-body">
+		            <div class="form-group">
+		                <label for="EvaSecName"><b>测 试 环 境 名 称：</b></label>   <!--之前不添加label标签可以?-->
+		                <input type="text" class="form-control" id="EvaSecName" name="name" />
+				<p class="tip" style="color:red"> </p>
+		            </div>
+		        </div>
+			
+		        <div class="modal-footer">
+		            <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+		            <button type="submit" class="btn btn-primary">确 认 添 加</button>
+		        </div>
             </div>
             <!-- /.modal-content -->
         </div>
@@ -140,7 +145,7 @@
         <!-- /.modal -->
     </form>
     <!--添加测试主机-->
-    <form class="modal fade" id="Add_Host" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" method='post' action='/ves_ihep/add_host/'>
+    <form class="modal fade" id="Add_Host" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" method='post' action='/ves_ihep/add_host/' onsubmit="return AHFormCheck()">
         {% csrf_token %}
         <div class="modal-dialog">
             <div class="modal-content">
@@ -160,6 +165,7 @@
                         <input type="text" class="form-control" id="HostUser" name="username" />
                         <label for="HostPwd"><b>密 码：</b></label>   
                         <input type="password" class="form-control" id="HostPwd" name="passwd"/>
+			<p class="tip" style="color:red"> </p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -184,7 +190,7 @@
                 </h4>
                 </div>
                 <div class="modal-body">
-                    <form action="/ves_ihep/add_script/" method="post" enctype="multipart/form-data" id="add_script_form">
+                    <form action="/ves_ihep/add_script/" method="post" enctype="multipart/form-data" id="add_script_form" onsubmit="return AScriptFormCheck()">
                         {% csrf_token %}
                         <div class="form-group">
                             <label for="ScriptName">
@@ -195,6 +201,7 @@
                         <div class="form-group">
                             <label for="ScriptFile">ScriptFile</label>
                             <input type="file" name="ScriptFile" id="ScriptFile" style="width:450px; height:35px;margin:25px 250px 0 auto;font-size:20px;">
+			    <p class="tip" style="color:red"> </p>
                         </div>
                     </form>
                 </div>

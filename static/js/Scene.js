@@ -14,6 +14,7 @@ function set_scene(id)
     $("#NativeFile").attr("disabled",false);
     $("#ScriptPoolFile").attr("disabled",false);
     $("#add_activity_btn").attr("onclick","add_activity("+id+")");
+    $(".tip").empty();
 }
 
 function set_activity(id)
@@ -23,6 +24,7 @@ function set_activity(id)
 
 function add_activity(scene_id)
 {
+	$(".tip").empty();
     if ($("#NativeFile").attr("disabled"))
     {
         $.ajax({
@@ -41,8 +43,10 @@ function add_activity(scene_id)
             {
                 if(data.result=="success")
                     location.reload()
-                else
-                    alert("error")
+                else{
+                    str="Please make sure that you have choose suitable script file";
+		    Tip(str);
+		    }
             }
         });
     }
@@ -67,7 +71,10 @@ function add_activity(scene_id)
                     location.reload();
                 }
                 else
-                    alert("error");
+                {
+		    str="Please make sure that you have choose suitable script file";
+		    Tip(str);
+		}
             },
             error: function(data)
             {
@@ -144,6 +151,7 @@ function deploy_init(scene_id)
     $('#deploy_list').empty()
     $('#deploy_activity_select').empty()
     $('#deploy_btn').attr("onclick","deploy("+scene_id+")")
+    
     $.ajax({
         type: "post",
         url: "/ves_ihep/get_activity/",
@@ -160,7 +168,10 @@ function deploy_init(scene_id)
                     $('#deploy_activity_select').append('<option value="'+key+'" >'+data.activities[key]+'</option>')
                 }
             else
-                alert("error")
+		{
+	            str="deploy scene failed";
+		    Tip(str);
+		}
         }
     });
 }
@@ -171,6 +182,7 @@ function add_deploy_list()
     activity_name=$('#deploy_activity_select option:selected').text()
     host_id=$('#Eva_Host option:selected').val()
     host_name=$('#Eva_Host option:selected').text()
+    $(".tip").empty();
     $('#deploy_list').append('<tr id="deploy_list_'+activity_id+'_'+host_id+'">'+
             '<td id="deploy_activity_'+activity_id+'">'+activity_name+'</td>'+
             '<td id="deploy_host_'+host_id+'">'+host_name+'</td>'+
@@ -267,4 +279,16 @@ function IsContain(arr,value)
         return true;
     }
     return false;
+}
+$(function(){$('#Add_New_Action').on('show.bs.modal', function () {
+  	$(".tip").empty();
+	})
+})
+$(function(){$('#Deploy_Scene').on('show.bs.modal', function () {
+  	$(".tip").empty();
+	})
+})
+function Tip(tipcontent)
+{
+	$(".tip").append(tipcontent);
 }

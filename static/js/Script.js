@@ -15,8 +15,9 @@ function delete_script(id)
         {
             if(data.result=="success")
                 location.reload()
-            else
-                alert(error)
+//            else
+ //               alert("error")
         }
     });
 }
+
