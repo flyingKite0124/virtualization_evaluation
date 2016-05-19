@@ -183,7 +183,9 @@ def add_script(request):
 
 def delete_script(request):
     if request.is_ajax() == True and request.method == "POST":
-        Script.objects.get(pk=request.POST['script_id']).delete()
+        script=Script.objects.get(pk=request.POST['script_id'])
+        os.popen("rm "+script.script_path)
+        script.delete()
         return JsonResponse({'result': 'success'})
 
 
