@@ -39,6 +39,7 @@ class Host(models.Model):
     username = models.CharField(max_length=128)
     passwd = models.CharField(max_length=128)
     status = models.IntegerField(default=0)
+    alias = models.IntegerField(default=-1)
 
     def __unicode__(self):
         return self.IP
@@ -58,7 +59,8 @@ class SceneHistory(models.Model):
 
 
 class ActivityHistory(models.Model):
-    result_path = models.CharField(max_length=120, null=True)
+    stdout_path = models.CharField(max_length=120, null=True)
+    stderr_path = models.CharField(max_length=120, null=True)
     start_time = models.DateTimeField(blank=True, null=True)
     finish_time = models.DateTimeField(blank=True, null=True)
     host = models.ForeignKey(Host)

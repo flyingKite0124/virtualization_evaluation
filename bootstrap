@@ -1,3 +1,15 @@
+#!/bin/bash
+
 git update-index --assume-unchanged virtualization_evaluation/database.py
 python manage.py makemigrations
 python manage.py migrate
+mkdir /ves_server
+mv ves_ihep/ves_connection/ves_server.py /ves_server/
+mv ves_ihep/ves_connection/daemon.py /ves_server/
+mv ves_ihep/ves_connection/ves_server /etc/init.d
+ln -s /etc/init.d/ves_client /etc/rc2.d/S99ves_client
+ln -s /etc/init.d/ves_client /etc/rc3.d/S99ves_client
+ln -s /etc/init.d/ves_client /etc/rc5.d/S99ves_client
+ln -s /etc/init.d/ves_client /etc/rc0.d/K01ves_client
+ln -s /etc/init.d/ves_client /etc/rc6.d/K01ves_client
+

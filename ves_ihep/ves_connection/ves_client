@@ -1,0 +1,31 @@
+#!/bin/bash
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+PYTHON=$(which python)
+DAEMON=/ves/ves_client.py
+PIDFILE=/var/run/ves_client.pid
+
+. /lib/lsb/init-functions
+
+case "$1" in 
+    start)
+        start_daemon -p $PIDFILE $PYTHON $DAEMON
+    ;;
+    stop)
+        killproc -p $PIDFILE $DAEMON
+        if [ -e $PIDFILE ]
+            then
+                rm -f $PIDFILE
+        fi
+    ;;
+    restart)
+        $0 stop
+        $0 start
+    ;;
+    *)
+        echo "Usage: /etc/init.d/test_daemon {start|stop|restart}"
+        exit 1
+    ;;
+esac
+
+exit 0

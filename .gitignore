@@ -1,4 +1,5 @@
 *.pyc
+FEATURE_CODE
 /scripts/native/*
 /scripts/pool/*
 /result/*

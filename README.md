@@ -3,7 +3,7 @@ ves: web version used to test the virtual machine and physical machine's perform
 
 ## Dependencies
 ```sh
-pip install django==1.7
+pip install django==1.7 mysql-python
 ```
 
 ## Configure

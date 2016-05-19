@@ -71,43 +71,13 @@ def add_host(request):
         host.passwd = request.POST['passwd']
         host.status = 0
         host.save()
-        if ves_connection.test.ssh_cmd(
-                host.IP,
-                22,
-                host.username,
-                host.passwd,
-                "echo success"):
-            if ves_connection.test.check_file(
-                    host.IP, 22, host.username, host.passwd):
-                pass
-            else:
-                ves_connection.test.ssh_cmd(
-                    host.IP, 22, host.username, host.passwd, "mkdir /ves_ihep_scripts")
-                ves_connection.test.scp_cmd(
-                    host.IP,
-                    22,
-                    host.username,
-                    host.passwd,
-                    os.path.join(
-                        os.path.dirname(
-                            os.path.abspath(__file__)),
-                        "ves_connection",
-                        "server.py"))
-                ves_connection.test.ssh_cmd(
-                    host.IP,
-                    22,
-                    host.username,
-                    host.passwd,
-                    "chmod 755 /ves_ihep_scripts/server.py")
-                ves_connection.test.ssh_cmd(
-                    host.IP,
-                    22,
-                    host.username,
-                    host.passwd,
-                    "/ves_ihep_scripts/server.py")
-        return HttpResponseRedirect('/ves_ihep/hostpool/')
-    else:
-        return HttpResponseNotFound("Pelease Enter Right URL!")
+
+        host_connect=ves_connection.connect.Host(request['IP'],request['username'],request['passwd'])
+        if not host_connect.test_connection():
+            return HttpResponseRedirect('/ves/hostpool')
+        if host_connect.init_host(host.id)!=host.id:
+            host.delete()
+        return HttpResponseRedirect('/ves/hostpool')
 
 
 def get_status(request):
@@ -134,20 +104,6 @@ def delete_host(request):
         Host.objects.get(pk=request.POST['host_id']).delete()
         return JsonResponse({'result': 'success'})
 
-
-"""def scripts(request):
-    if request.is_ajax()==False and request.method == 'GET':
-        template=loader.get_template('Scriptpool.html')
-        temp_var={}
-        temp_var['page']='script'
-        temp_var['scenes']=Scene.objects.all()
-        temp_var['scripts']=Script.objects.all()
-        for script in temp_var['scripts']:
-            fp=open(script.script_path,"r")
-            script.script_content=fp.read()
-            fp.close()
-        context=RequestContext(request,temp_var)
-        return HttpResponse(template.render(context))"""
 
 
 def scriptpool(request):
@@ -184,7 +140,7 @@ def add_script(request):
 def delete_script(request):
     if request.is_ajax() == True and request.method == "POST":
         script=Script.objects.get(pk=request.POST['script_id'])
-        os.popen("rm "+script.script_path)
+        os.remove(script.script_path)
         script.delete()
         return JsonResponse({'result': 'success'})
 
@@ -230,7 +186,10 @@ def view_activity(request):
 
 def delete_activity(request):
     if request.is_ajax() == True and request.method == "POST":
-        Activity.objects.get(pk=request.POST['activity_id']).delete()
+        act=Activity.objects.get(pk=request.POST['activity_id'])
+        if act.script.script_type=="native":
+            os.remove(act.script.script_path)
+        act.delete()
         return JsonResponse({'result': 'success'})
 
 
@@ -240,17 +199,6 @@ def rename_activity(request):
         activity.activity_name = request.POST['activity_name']
         activity.save()
         return JsonResponse({'result': 'success'})
-
-
-def get_activity(request):
-    if request.is_ajax() == True and request.method == "POST":
-        _scene = Scene.objects.get(pk=request.POST['scene_id'])
-        activities = Activity.objects.filter(scene=_scene)
-        ret_activities = dict()
-        for activity in activities:
-            ret_activities[activity.id] = activity.activity_name
-        return JsonResponse(
-            {'result': 'success', 'activities': ret_activities})
 
 
 def get_activity(request):
