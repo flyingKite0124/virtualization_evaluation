@@ -13,7 +13,7 @@
                 <div class="col-md-6 col-xs-6" align="center">View</div>
                 <div class="col-md-3 col-xs-3" align="center">Delete</div>
             </div>
-{% autopaginate scripts 5 %}
+{% autopaginate scripts 10 %}
             {% for script in scripts %}
             {% if script.script_type == "pool" %}
             <div class="row">
