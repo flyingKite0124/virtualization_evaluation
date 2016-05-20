@@ -32,7 +32,7 @@
                 </ul>
             </div>
             <div class="col-md-9 col-xs-9 content">
-                <pre id="content" style="height:300px; overflow:auto">结果显示处</pre>
+                <pre id="content" style="height:400px; overflow:auto">结果显示处</pre>
             </div>
         </div>
     </div>

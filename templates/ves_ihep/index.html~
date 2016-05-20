@@ -44,7 +44,7 @@
 {% paginate %}
                 </ul>
             </div>
-            <div class="col-xs-8 col-sm-8 col-md-8 content" style="height:300px; overflow: auto;">
+            <div class="col-xs-8 col-sm-8 col-md-8 content" style="height:400px; overflow: auto;">
                 <pre id="script_content">显示测试活动(脚本)具体内容区域</pre>
             </div>
 </div>
