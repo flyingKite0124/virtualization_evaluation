@@ -1,5 +1,6 @@
 {% extends 'base.html'  %}
 {% load staticfiles %}
+{% load pagination_tags %}
 
 {% block brand-title %}VES-POOL{% endblock %}
 
@@ -13,6 +14,7 @@
                 <div class="col-md-4 col-ms-4 col-xs-4" align="center">Status</div>
                 <div class="col-md-4 col-ms-4 col-xs-4" align="center">Delete</div>
             </div>
+{% autopaginate hosts 10 %}
             {% for host in hosts %}
             <div class="row" id="host_{{ host.id }}">
                 <div class="col-md-4 col-ms-4 col-xs-4" align="center">{{ host.IP }}</div>
@@ -21,11 +23,12 @@
                 {% elif host.status == True %}
                 <div class="col-md-4 col-ms-4 col-xs-4" align="center"><p id="host_connected_{{ host.id }}">Connected</p></div>
                 {% else %}
-                <div class="col-md-4 col-ms-4 col-xs-4" align="center"><p id="host_connected_{{ host.id }}">Running Script</p></div>
+                <div class="col-md-4 col-ms-4 col-xs-4" align="center"><p id="host_connected_{{ host.id }}">Error</p></div>
                 {% endif %}
                 <div class="col-md-4 col-ms-4 col-xs-4" align="center"><button onclick="delete_host({{ host.id }})" class="btn btn-sm">Del</button></div>
             </div>
             {% endfor %}
+            {% paginate %}
         </div>
     </div>
     <script type="text/javascript" src="{% static 'js/Host.js' %}"></script>

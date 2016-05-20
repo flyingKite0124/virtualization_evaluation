@@ -8,6 +8,19 @@ $(document).ready(function(){
 	});
 });
 
+function html_encode(str)
+{
+  var s = "";
+  if (str.length == 0) return "";
+  s = str.replace(/&/g, "&gt;");
+  s = s.replace(/</g, "&lt;");
+  s = s.replace(/>/g, "&gt;");
+  s = s.replace(/ /g, "&nbsp;");
+  s = s.replace(/\'/g, "&#39;");
+  s = s.replace(/\"/g, "&quot;");
+  s = s.replace(/\n/g, "<br>");
+  return s;
+}
 
 function set_scene(id)
 {
@@ -70,11 +83,10 @@ function add_activity(scene_id)
                 {
                     location.reload();
                 }
-                else
-                {
-		    str="Please make sure that you have choose suitable script file";
-		    Tip(str);
-		}
+                else {
+                    str = "Please make sure that you have choose suitable script file";
+                    Tip(str);
+                }
             },
             error: function(data)
             {
@@ -98,7 +110,7 @@ function view_activity(activity_id)
         success: function(data)
         {
             if(data.result=="success")
-                $("#script_content").html(data.content);
+                $("#script_content").html(html_encode(data.content));
             else
                 alert("error")
         }
@@ -235,21 +247,14 @@ function delete_deploy_list(activity_id,host_id)
 
 function deploy(scene_id)
 {
-    var hosts=[]
     var activities=[]
+    var activity_count=0
     $('#deploy_list').children().each(function()
     {
         activity_id=$(this).attr('id').split('_')[2]
         host_id=$(this).attr('id').split('_')[3]
-        activities[String(host_id)]=[]
-        if(!IsContain(hosts,host_id))
-            hosts.push(host_id)
-    })
-    $('#deploy_list').children().each(function()
-    {
-        activity_id=$(this).attr('id').split('_')[2]
-        host_id=$(this).attr('id').split('_')[3]
-        activities[String(host_id)].push(activity_id)
+        activities.push([host_id,activity_id])
+        activity_count++
     })
     $.ajax({
         type: "post",
@@ -258,7 +263,7 @@ function deploy(scene_id)
         {
             scene_id:scene_id,
             activities:activities,
-            hosts:hosts
+            activity_count:activity_count
         },
         dataType: "json",
         success: function(data)

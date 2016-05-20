@@ -35,8 +35,9 @@ class ves_client(daemon.Daemon):
             header = json.loads(header_json)
             if header["request"] == "new":
                 if threading.activeCount() == 1:
+                    conn.send("new task start")
                     script_path = os.path.join(
-                        "/ves/script", header["script_name"])
+                        "/ves/scripts", header["script_name"])
                     with open(script_path, "w") as fp:
                         restsize = header["filesize"]
                         while True:
@@ -108,7 +109,39 @@ class Run_script_thread(threading.Thread):
         return self.jobId
 
     def send_back(self, output):
-        pass
+        header=dict()
+        header["jobId"]=self.jobId
+        header["stdout_length"]=len(output[0])
+        header["stderr_length"]=len(output[1])
+        header_json=json.dumps(header)
+        sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        try:
+            sock.connect(self.backsock)
+            sock.send("ves result session start")
+            success_info=sock.recv(1024)
+            if success_info=="success":
+                sock.send(header_json)
+                if header["stdout_length"]!=0:
+                    sock.recv(1024)
+                    stdout_lines=list()
+                    for i in range(len(output[0])//1024):
+                        stdout_lines.append(output[0][i*1024:(i+1)*1024])
+                    if len(output[0])%1024!=0:
+                        stdout_lines.append(output[0][len(output[0])//1024*1024:])
+                    for i in range(len(stdout_lines)):
+                        sock.send(stdout_lines[i])
+                if header["stderr_length"]!=0:
+                    sock.recv(1024)
+                    stderr_lines=list()
+                    for i in range(len(output[1])//1024):
+                        stderr_lines.append(output[1][i*1024:(i+1)*1024])
+                    if len(output[1])%1024!=0:
+                        stderr_lines.append(output[1][len(output[1])//1024*1024:])
+                    for i in range(len(stderr_lines)):
+                        sock.send(stderr_lines[i])
+            sock.close()
+        except Exception as e:
+            print(e)
 
 
 class VesClientException(Exception):

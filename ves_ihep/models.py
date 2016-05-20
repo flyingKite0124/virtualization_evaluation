@@ -28,7 +28,7 @@ class Script(models.Model):
     script_name = models.CharField(max_length=120)
     upload_time = models.DateTimeField()
     script_type = models.CharField(max_length=30)
-    script_path = models.CharField(max_length=120,null=True)
+    script_path = models.CharField(max_length=240,null=True)
 
     def __unicode__(self):
         return self.script_name
@@ -59,8 +59,8 @@ class SceneHistory(models.Model):
 
 
 class ActivityHistory(models.Model):
-    stdout_path = models.CharField(max_length=120, null=True)
-    stderr_path = models.CharField(max_length=120, null=True)
+    stdout_path = models.CharField(max_length=240, null=True)
+    stderr_path = models.CharField(max_length=240, null=True)
     start_time = models.DateTimeField(blank=True, null=True)
     finish_time = models.DateTimeField(blank=True, null=True)
     host = models.ForeignKey(Host)

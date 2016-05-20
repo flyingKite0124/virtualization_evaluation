@@ -34,7 +34,7 @@ function view_result(activity_history_id)
         dataType: "json",
         success: function(data)
         {
-            if(data.state=="success")
+            if(data.result=="success")
             {
                 showresult(data);
             }

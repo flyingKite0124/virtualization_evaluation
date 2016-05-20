@@ -2,8 +2,8 @@
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 PYTHON=$(which python)
-DAEMON=/ves/ves_server.py
-PIDFILE=/var/run/test_daemon.pid
+DAEMON=/ves_server/ves_server.py
+PIDFILE=/var/run/ves_server.pid
 
 . /lib/lsb/init-functions
 

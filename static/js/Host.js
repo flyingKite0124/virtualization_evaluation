@@ -40,7 +40,7 @@ function get_status()
                     else if(data.hosts[key]==1)
                         $("#host_connected_"+String(key)).html("Connected")
                     else
-                        $("#host_connected_"+String(key)).html("Running Script")
+                        $("#host_connected_"+String(key)).html("Error")
                 }
             else
             {

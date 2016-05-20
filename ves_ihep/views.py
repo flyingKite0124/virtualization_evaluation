@@ -1,7 +1,11 @@
+#!/usr/bin/python
+#coding=utf-8
+
 import os
+import json
 import datetime
 import ves_connection
-import thread
+import fcntl
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotFound, HttpResponseNotAllowed
 from ves_ihep.models import Scene, Script, Host, Activity, SceneHistory, ActivityHistory
@@ -72,12 +76,12 @@ def add_host(request):
         host.status = 0
         host.save()
 
-        host_connect=ves_connection.connect.Host(request['IP'],request['username'],request['passwd'])
+        host_connect=ves_connection.connect.Host(host.IP,host.username,host.passwd)
         if not host_connect.test_connection():
-            return HttpResponseRedirect('/ves/hostpool')
+            return HttpResponseRedirect('/ves_ihep/hostpool')
         if host_connect.init_host(host.id)!=host.id:
             host.delete()
-        return HttpResponseRedirect('/ves/hostpool')
+        return HttpResponseRedirect('/ves_ihep/hostpool')
 
 
 def get_status(request):
@@ -86,15 +90,11 @@ def get_status(request):
         ret['hosts'] = dict()
         hosts = Host.objects.all()
         for host in hosts:
-            if host.status == 2:
-                ret['hosts'][host.id] = 2
+            host_connect=ves_connection.connect.Host(host.IP,host.username,host.passwd)
+            if host_connect.test_connection():
+                ret['hosts'][host.id]=1
             else:
-                ret['hosts'][host.id] = ves_connection.test.ssh_cmd(
-                    host.IP, 22, host.username, host.passwd, "echo success")
-
-                host_change = Host.objects.get(pk=host.id)
-                host_change.status = ret['hosts'][host.id]
-                host_change.save()
+                ret['hosts'][host.id]=0
         ret['result'] = "success"
         return JsonResponse(ret)
 
@@ -107,7 +107,7 @@ def delete_host(request):
 
 
 def scriptpool(request):
-    script_list = Script.objects.all()
+    script_list = Script.objects.filter(script_type="pool")
     for script in script_list:
         fp = open(script.script_path, "r")
         script.script_content = fp.read()
@@ -189,6 +189,7 @@ def delete_activity(request):
         act=Activity.objects.get(pk=request.POST['activity_id'])
         if act.script.script_type=="native":
             os.remove(act.script.script_path)
+            act.script.delete()
         act.delete()
         return JsonResponse({'result': 'success'})
 
@@ -218,50 +219,61 @@ def deploy(request):
         scene_history = SceneHistory()
         scene_history.scene = scene
         scene_history.save()
-        hosts = request.POST.getlist('hosts[]')
-        for host_id in hosts:
-            host = Host.objects.get(pk=host_id)
-            activities = request.POST.getlist('activities[' + host_id + '][]')
-            thread.start_new_thread(
-                run_activity, (scene_history, host, activities))
+        run_count=int(request.POST['activity_count'])
+        with open('/ves_server/tasks',"a") as fp:
+            fcntl.flock(fp,fcntl.LOCK_EX)
+            for run_id in range(run_count):
+                run=request.POST.getlist('activities['+str(run_id)+'][]')
+                host_id=int(run[0])
+                activity_id=int(run[1])
+                activity_history=ActivityHistory()
+                activity_history.scene_history=scene_history
+                activity_history.host=Host.objects.get(pk=host_id)
+                activity_history.activity=Activity.objects.get(pk=activity_id)
+                activity_history.save()
+                activity_history.stdout_path = os.path.join(
+                    os.path.dirname(
+                        os.path.dirname(__file__)
+                    ),
+                    "result",
+                    "stdout",
+                    str(activity_history.id)
+                )
+                with open(activity_history.stdout_path,"w") as fout:
+                    fout.write("script is running")
+                activity_history.stderr_path = os.path.join(
+                    os.path.dirname(
+                        os.path.dirname(__file__)
+                    ),
+                    "result",
+                    "stderr",
+                    str(activity_history.id)
+                )
+                open(activity_history.stderr_path,"w").close()
+                activity_history.save()
+
+                activity=dict()
+                activity["activity_history_id"]=activity_history.id
+                activity["ip"]=activity_history.host.IP
+                activity["script_path"]=activity_history.activity.script.script_path
+                activity["script_name"]=os.path.basename(activity["script_path"])
+                activity["stdout_path"]=activity_history.stdout_path
+                activity["stderr_path"]=activity_history.stderr_path
+                fp.writelines(json.dumps(activity)+"\n")
+
+            fcntl.flock(fp,fcntl.LOCK_UN)
         return JsonResponse({'result': 'success'})
 
-
-def run_activity(scene_history, host, activities):
-    for activity_id in activities:
-        activity = Activity.objects.get(pk=activity_id)
-        activity_history = ActivityHistory()
-        activity_history.scene_history = scene_history
-        activity_history.host = host
-        activity_history.activity = activity
-        activity_history.start_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S")
-        activity_history.save()
-        activity_history.result_path = os.path.join(
-            os.path.dirname(
-                os.path.dirname(__file__)
-            ),
-            "result",
-            str(activity_history.id)
-        )
-        activity_history.save()
-        with open(activity_history.result_path, "w")as fp:
-            fp.write("Script is Running!")
-        result = ves_connection.test.remote_run(
-            host.IP, 22, host.username, host.passwd, activity.script.script_path)
-        activity_history.finish_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S")
-        activity_history.save()
-        with open(activity_history.result_path, "w")as fp:
-            fp.write(result)
 
 
 def view_result(request):
     if request.is_ajax() == True and request.method == "POST":
         activity_history = ActivityHistory.objects.get(
             pk=request.POST['activity_history_id'])
-        with open(activity_history.result_path, "r") as fp:
+        with open(activity_history.stdout_path, "r") as fp:
             result = fp.read()
         return JsonResponse(
-            {'result': 'success', 'content': result})
+            {'result': 'success','type':0, 'content': result})
 
 
 def evaresult(request):

@@ -2,7 +2,6 @@
 # coding=utf-8
 import os
 import sys
-import atexit
 
 
 class Daemon:
@@ -50,10 +49,7 @@ class Daemon:
         os.dup2(se.fileno(), sys.stderr.fileno())
 
         file(self.pidfile, "w+").write("%s\n" % pid)
-        atexit.register(self.delpid)
 
-    def delpid(self):
-        os.remove(self.pidfile)
 
     def start(self):
         self._daemonize()
